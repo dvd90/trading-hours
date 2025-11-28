@@ -52,7 +52,9 @@ function renderMarketRow(status: MarketStatus): string {
               </div>
             </td>
             <td style="vertical-align:top;">
-              <div style="font-size:16px;font-weight:600;color:#0f172a;margin-bottom:2px;">${status.exchange}</div>
+              <div style="font-size:16px;font-weight:600;color:#0f172a;margin-bottom:2px;">${
+                status.exchange
+              }</div>
               <div style="font-size:13px;color:#64748b;">${status.name}</div>
             </td>
             <td width="90" style="vertical-align:top;text-align:right;">
@@ -71,9 +73,15 @@ function renderMarketRow(status: MarketStatus): string {
                     <div style="font-size:22px;font-weight:700;color:#0f172a;font-family:'SF Mono',Monaco,monospace;">${countdown}</div>
                   </td>
                   <td width="12"></td>
-                  <td style="background:${isOpen ? '#f0fdf4' : '#fef2f2'};border-radius:8px;padding:10px 14px;text-align:center;" width="100">
-                    <div style="font-size:11px;color:#64748b;margin-bottom:2px;">${status.hoursUntil}h</div>
-                    <div style="font-size:13px;font-weight:600;color:${statusColor};">${isOpen ? 'remaining' : 'until open'}</div>
+                  <td style="background:${
+                    isOpen ? '#f0fdf4' : '#fef2f2'
+                  };border-radius:8px;padding:10px 14px;text-align:center;" width="100">
+                    <div style="font-size:11px;color:#64748b;margin-bottom:2px;">${
+                      status.hoursUntil
+                    }h</div>
+                    <div style="font-size:13px;font-weight:600;color:${statusColor};">${
+    isOpen ? 'remaining' : 'until open'
+  }</div>
                   </td>
                 </tr>
               </table>
@@ -112,15 +120,15 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
   <title>Market Hours</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
-  
+
   <!-- Wrapper -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f1f5f9;">
     <tr>
       <td align="center" style="padding:24px 16px;">
-        
+
         <!-- Main Container -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:520px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1),0 2px 4px -2px rgba(0,0,0,0.1);">
-          
+
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:32px 24px;text-align:center;">
@@ -133,7 +141,7 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
               </p>
             </td>
           </tr>
-          
+
           <!-- Time Display -->
           <tr>
             <td style="padding:24px;text-align:center;border-bottom:1px solid #e2e8f0;">
@@ -146,7 +154,7 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
                   </td>
                 </tr>
               </table>
-              
+
               <!-- Summary Badge -->
               <div style="margin-top:16px;">
                 <span style="display:inline-block;background:${summaryBg};color:${summaryColor};padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;">
@@ -155,7 +163,7 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
               </div>
             </td>
           </tr>
-          
+
           <!-- Markets Header -->
           <tr>
             <td style="padding:20px 20px 8px;">
@@ -164,7 +172,7 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
               </div>
             </td>
           </tr>
-          
+
           <!-- Market Cards -->
           <tr>
             <td style="padding:0;">
@@ -173,7 +181,7 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
               </table>
             </td>
           </tr>
-          
+
           <!-- Footer -->
           <tr>
             <td style="padding:24px;text-align:center;background:#f8fafc;">
@@ -185,18 +193,18 @@ export function generateEmailHtml(params: EmailTemplateParams): string {
               </p>
             </td>
           </tr>
-          
+
         </table>
-        
+
         <!-- Footer Text -->
         <p style="margin:16px 0 0;font-size:11px;color:#94a3b8;text-align:center;">
           Trading Hours • Built with ☕
         </p>
-        
+
       </td>
     </tr>
   </table>
-  
+
 </body>
 </html>
   `;
