@@ -252,7 +252,7 @@ export function generateReport(
       <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 8px;">🕐 Market Hours Check</h1>
       <p style="color: #666; margin: 4px 0;">📍 Timezone: ${userTimezone}</p>
       <p style="color: #666; margin: 4px 0 20px;">⏰ ${currentTime}</p>
-      
+
       <div style="display: flex; flex-direction: column; gap: 12px;">
   `;
 
@@ -287,4 +287,3 @@ export function generateReport(
 
   return { text, html, statuses };
 }
-
