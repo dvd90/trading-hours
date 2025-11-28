@@ -510,13 +510,15 @@
             <div class="success-message" id="success">
               <div class="icon">🎉</div>
               <h3>Almost there!</h3>
-              <p>Click "Submit new issue" on GitHub to complete your signup. You'll be added automatically!</p>
+              <p>
+                Click "Submit new issue" on GitHub to complete your signup.
+                You'll be added automatically!
+              </p>
             </div>
 
             <form
               id="signup-form"
-              action="https://formspree.io/f/meobrnld"
-              method="POST"
+              onsubmit="return false;"
             >
               <div class="form-group">
                 <label for="name">Your Name</label>
@@ -676,43 +678,42 @@
       });
 
       // Form submission - creates GitHub issue
-      document
-        .getElementById('signup-form')
-        .addEventListener('submit', (e) => {
-          e.preventDefault();
+      document.getElementById('signup-form').addEventListener('submit', (e) => {
+        e.preventDefault();
 
-          const form = e.target;
-          const name = form.querySelector('#name').value;
-          const email = form.querySelector('#email').value;
-          const timezone = form.querySelector('#timezone').value;
-          
-          // Get selected exchanges
-          const exchanges = [];
-          form
-            .querySelectorAll('input[name="exchanges"]:checked')
-            .forEach((cb) => {
-              exchanges.push(cb.value);
-            });
+        const form = e.target;
+        const name = form.querySelector('#name').value;
+        const email = form.querySelector('#email').value;
+        const timezone = form.querySelector('#timezone').value;
 
-          // Build issue body
-          const issueBody = `Name: ${name}
+        // Get selected exchanges
+        const exchanges = [];
+        form
+          .querySelectorAll('input[name="exchanges"]:checked')
+          .forEach((cb) => {
+            exchanges.push(cb.value);
+          });
+
+        // Build issue body
+        const issueBody = `Name: ${name}
 Email: ${email}
 Timezone: ${timezone}
 Exchanges: ${exchanges.join(', ')}`;
 
-          // Create GitHub issue URL
-          const issueUrl = `https://github.com/dvd90/trading-hours/issues/new?` +
-            `title=${encodeURIComponent('[NEW USER] ' + name)}` +
-            `&body=${encodeURIComponent(issueBody)}` +
-            `&labels=new-user`;
+        // Create GitHub issue URL
+        const issueUrl =
+          `https://github.com/dvd90/trading-hours/issues/new?` +
+          `title=${encodeURIComponent('[NEW USER] ' + name)}` +
+          `&body=${encodeURIComponent(issueBody)}` +
+          `&labels=new-user`;
 
-          // Open in new tab
-          window.open(issueUrl, '_blank');
-          
-          // Show success
-          form.classList.add('hidden');
-          document.getElementById('success').classList.add('show');
-        });
+        // Open in new tab
+        window.open(issueUrl, '_blank');
+
+        // Show success
+        form.classList.add('hidden');
+        document.getElementById('success').classList.add('show');
+      });
 
       // Auto-detect timezone
       const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;

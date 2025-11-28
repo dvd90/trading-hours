@@ -20,45 +20,45 @@ jobs:
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
           echo "Parsing issue #$ISSUE_NUMBER..."
-          
+
           # Parse the issue body for user details
           # Expected format:
           # Name: John Doe
           # Email: john@example.com
           # Timezone: America/New_York
           # Exchanges: NYSE, NASDAQ
-          
+
           NAME=$(echo "$ISSUE_BODY" | grep -i "^name:" | cut -d':' -f2- | xargs)
           EMAIL=$(echo "$ISSUE_BODY" | grep -i "^email:" | cut -d':' -f2- | xargs)
           TIMEZONE=$(echo "$ISSUE_BODY" | grep -i "^timezone:" | cut -d':' -f2- | xargs)
           EXCHANGES=$(echo "$ISSUE_BODY" | grep -i "^exchanges:" | cut -d':' -f2- | xargs)
-          
+
           echo "Name: $NAME"
           echo "Email: $EMAIL"
           echo "Timezone: $TIMEZONE"
           echo "Exchanges: $EXCHANGES"
-          
+
           # Validate required fields
           if [ -z "$NAME" ] || [ -z "$EMAIL" ] || [ -z "$TIMEZONE" ]; then
             echo "❌ Missing required fields!"
             exit 1
           fi
-          
+
           # Default exchanges if not provided
           if [ -z "$EXCHANGES" ]; then
             EXCHANGES="NYSE,NASDAQ"
           fi
-          
+
           # Check if user already exists
           if jq -e --arg email "$EMAIL" '.[] | select(.email == $email)' users.json > /dev/null 2>&1; then
             echo "⚠️ User $EMAIL already exists, skipping..."
             echo "SKIPPED=true" >> $GITHUB_ENV
             exit 0
           fi
-          
+
           # Convert exchanges to JSON array
           EXCHANGES_JSON=$(echo "$EXCHANGES" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | jq -R . | jq -s .)
-          
+
           # Create new user object
           NEW_USER=$(jq -n \
             --arg name "$NAME" \
@@ -66,13 +66,13 @@ jobs:
             --arg timezone "$TIMEZONE" \
             --argjson exchanges "$EXCHANGES_JSON" \
             '{name: $name, email: $email, timezone: $timezone, exchanges: $exchanges}')
-          
+
           echo "Adding user: $NEW_USER"
-          
+
           # Add user to users.json
           jq --argjson user "$NEW_USER" '. += [$user]' users.json > users.tmp.json
           mv users.tmp.json users.json
-          
+
           echo "✅ User added successfully!"
           echo "USER_EMAIL=$EMAIL" >> $GITHUB_ENV
           echo "USER_NAME=$NAME" >> $GITHUB_ENV
@@ -121,4 +121,3 @@ jobs:
               issue_number: ${{ github.event.issue.number }},
               state: 'closed'
             });
-
