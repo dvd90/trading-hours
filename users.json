@@ -3,6 +3,18 @@
     "name": "David",
     "email": "dvdsellam@gmail.com",
     "timezone": "Asia/Tel_Aviv",
-    "exchanges": ["NYSE", "NASDAQ"]
+    "exchanges": [
+      "NYSE",
+      "NASDAQ"
+    ]
+  },
+  {
+    "name": "test",
+    "email": "dvdsellam+test@gmail.com",
+    "timezone": "America/Chicago",
+    "exchanges": [
+      "NYSE",
+      "NASDAQ"
+    ]
   }
 ]
