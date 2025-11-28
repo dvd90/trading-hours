@@ -69,4 +69,3 @@ export const MARKETS: Record<string, MarketConfig> = {
 
 export const DEFAULT_EXCHANGES = ['NYSE', 'NASDAQ', 'LSE', 'JPX'];
 export const DEFAULT_TIMEZONE = 'UTC';
-

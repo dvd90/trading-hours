@@ -30,4 +30,3 @@ export interface Report {
   html: string;
   statuses: MarketStatus[];
 }
-

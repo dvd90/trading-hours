@@ -36,4 +36,3 @@ export function getNextTradingDay(date: Date, marketTz: string): Date {
 export function msToHours(ms: number): number {
   return Math.round((ms / 3600000) * 10) / 10;
 }
-
