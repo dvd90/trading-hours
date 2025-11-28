@@ -5,23 +5,83 @@ on:
   workflow_dispatch:
     inputs:
       timezone:
-        description: "Your timezone"
+        description: "Select timezone (or use custom below)"
         required: true
         type: choice
         default: "America/New_York"
         options:
+          # Americas
           - "America/New_York"
           - "America/Los_Angeles"
           - "America/Chicago"
+          - "America/Denver"
+          - "America/Phoenix"
           - "America/Toronto"
+          - "America/Vancouver"
+          - "America/Montreal"
+          - "America/Mexico_City"
+          - "America/Sao_Paulo"
+          - "America/Buenos_Aires"
+          - "America/Lima"
+          - "America/Bogota"
+          - "America/Santiago"
+          # Europe
           - "Europe/London"
           - "Europe/Paris"
           - "Europe/Berlin"
+          - "Europe/Amsterdam"
+          - "Europe/Brussels"
+          - "Europe/Zurich"
+          - "Europe/Madrid"
+          - "Europe/Rome"
+          - "Europe/Vienna"
+          - "Europe/Stockholm"
+          - "Europe/Oslo"
+          - "Europe/Copenhagen"
+          - "Europe/Helsinki"
+          - "Europe/Warsaw"
+          - "Europe/Prague"
+          - "Europe/Dublin"
+          - "Europe/Lisbon"
+          - "Europe/Athens"
+          - "Europe/Moscow"
+          - "Europe/Istanbul"
+          # Asia
           - "Asia/Tokyo"
           - "Asia/Hong_Kong"
           - "Asia/Singapore"
+          - "Asia/Shanghai"
+          - "Asia/Seoul"
+          - "Asia/Taipei"
+          - "Asia/Bangkok"
+          - "Asia/Jakarta"
+          - "Asia/Manila"
+          - "Asia/Kuala_Lumpur"
+          - "Asia/Ho_Chi_Minh"
+          - "Asia/Mumbai"
+          - "Asia/Kolkata"
+          - "Asia/Dubai"
+          - "Asia/Tel_Aviv"
+          - "Asia/Riyadh"
+          # Pacific / Oceania
           - "Australia/Sydney"
+          - "Australia/Melbourne"
+          - "Australia/Brisbane"
+          - "Australia/Perth"
+          - "Pacific/Auckland"
+          - "Pacific/Honolulu"
+          # Africa
+          - "Africa/Johannesburg"
+          - "Africa/Cairo"
+          - "Africa/Lagos"
+          - "Africa/Nairobi"
+          # UTC
           - "UTC"
+      custom_timezone:
+        description: "Custom timezone (overrides above, e.g. Asia/Karachi)"
+        required: false
+        type: string
+        default: ""
       exchanges:
         description: "Exchanges to check"
         required: true
@@ -62,6 +122,6 @@ jobs:
 
       - name: Check market hours
         env:
-          TIMEZONE: ${{ github.event.inputs.timezone || 'America/New_York' }}
+          TIMEZONE: ${{ github.event.inputs.custom_timezone || github.event.inputs.timezone || 'America/New_York' }}
           EXCHANGES: ${{ github.event.inputs.exchanges || 'NYSE,NASDAQ,LSE,JPX' }}
         run: npm run check
