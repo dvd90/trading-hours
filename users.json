@@ -7,14 +7,5 @@
       "NYSE",
       "NASDAQ"
     ]
-  },
-  {
-    "name": "test",
-    "email": "dvdsellam+test@gmail.com",
-    "timezone": "America/Chicago",
-    "exchanges": [
-      "NYSE",
-      "NASDAQ"
-    ]
   }
 ]
