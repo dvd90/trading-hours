@@ -1,10 +1,12 @@
 import { format } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+
+import { DEFAULT_EXCHANGES, DEFAULT_TIMEZONE } from './config.js';
 import { getMarketStatus, formatOutput } from './markets.js';
 
 function main() {
-  const userTimezone = process.env.TIMEZONE || 'UTC';
-  const exchangesStr = process.env.EXCHANGES || 'NYSE,NASDAQ,LSE,JPX';
+  const userTimezone = process.env.TIMEZONE || DEFAULT_TIMEZONE;
+  const exchangesStr = process.env.EXCHANGES || DEFAULT_EXCHANGES.join(',');
   const exchanges = exchangesStr.split(',').map((e) => e.trim());
 
   const now = new Date();

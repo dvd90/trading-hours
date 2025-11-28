@@ -1,12 +1,25 @@
 import { Resend } from 'resend';
 import { readFileSync } from 'fs';
+
+import type { User } from './types.js';
 import { generateReport } from './markets.js';
 
-interface User {
-  name: string;
-  email: string;
-  timezone: string;
-  exchanges: string[];
+function loadUsers(): User[] {
+  try {
+    const usersJson = readFileSync('users.json', 'utf-8');
+    return JSON.parse(usersJson);
+  } catch (error) {
+    console.error('❌ Could not read users.json:', error);
+    process.exit(1);
+  }
+}
+
+function formatEmailSubject(): string {
+  return `🕐 Market Hours - ${new Date().toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+  })}`;
 }
 
 async function main() {
@@ -23,16 +36,7 @@ async function main() {
   }
 
   const fromEmail = process.env.FROM_EMAIL || 'onboarding@resend.dev';
-
-  // Load users
-  let users: User[];
-  try {
-    const usersJson = readFileSync('users.json', 'utf-8');
-    users = JSON.parse(usersJson);
-  } catch (error) {
-    console.error('❌ Could not read users.json:', error);
-    process.exit(1);
-  }
+  const users = loadUsers();
 
   if (users.length === 0) {
     console.log('No users configured in users.json');
@@ -55,11 +59,7 @@ async function main() {
       const { data, error } = await resend.emails.send({
         from: fromEmail,
         to: user.email,
-        subject: `🕐 Market Hours - ${new Date().toLocaleDateString('en-US', {
-          weekday: 'long',
-          month: 'short',
-          day: 'numeric',
-        })}`,
+        subject: formatEmailSubject(),
         text: report.text,
         html: report.html,
       });
