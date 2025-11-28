@@ -85,12 +85,10 @@ jobs:
 
       - name: Commit and push
         if: env.SKIPPED != 'true'
-        run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
-          git add users.json
-          git commit -m "Add user: ${{ env.USER_NAME }} (${{ env.USER_EMAIL }})"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Add user: ${{ env.USER_NAME }} (${{ env.USER_EMAIL }})"
+          file_pattern: users.json
 
       - name: Close issue with success comment
         if: env.SKIPPED != 'true'
