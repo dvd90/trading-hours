@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Hours - Never Miss Market Open</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #0a0a0f;
+        color: #e2e8f0;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Animated background */
+      .bg-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            ellipse at 20% 20%,
+            rgba(59, 130, 246, 0.15) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 80%,
+            rgba(16, 185, 129, 0.1) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(139, 92, 246, 0.05) 0%,
+            transparent 70%
+          );
+        z-index: -1;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* Header */
+      header {
+        padding: 24px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .logo-icon {
+        font-size: 28px;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 80px 0 60px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34d399;
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 24px;
+      }
+
+      .badge::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #34d399;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      h1 {
+        font-size: clamp(40px, 8vw, 64px);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero p {
+        font-size: 18px;
+        color: #94a3b8;
+        max-width: 600px;
+        margin: 0 auto 40px;
+        line-height: 1.6;
+      }
+
+      /* Features */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        padding: 40px 0 80px;
+      }
+
+      .feature {
+        background: linear-gradient(
+          145deg,
+          rgba(30, 30, 45, 0.5) 0%,
+          rgba(23, 23, 35, 0.5) 100%
+        );
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 28px;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+
+      .feature:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .feature-icon {
+        font-size: 32px;
+        margin-bottom: 16px;
+      }
+
+      .feature h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+
+      .feature p {
+        font-size: 14px;
+        color: #64748b;
+        line-height: 1.6;
+      }
+
+      /* Markets */
+      .markets {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 60px;
+      }
+
+      .market-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 10px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      /* Form Section */
+      .form-section {
+        padding: 80px 0;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(16, 185, 129, 0.03) 100%
+        );
+      }
+
+      .form-container {
+        max-width: 480px;
+        margin: 0 auto;
+        background: linear-gradient(145deg, #1a1a2e 0%, #16182a 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      }
+
+      .form-header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .form-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 8px;
+      }
+
+      .form-header p {
+        color: #64748b;
+        font-size: 15px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        color: #fff;
+        font-size: 15px;
+        font-family: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+
+      input::placeholder {
+        color: #475569;
+      }
+
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 20px;
+      }
+
+      select option {
+        background: #1a1a2e;
+        color: #fff;
+      }
+
+      .checkbox-group {
+        margin-bottom: 24px;
+      }
+
+      .checkbox-group label {
+        margin-bottom: 12px;
+      }
+
+      .checkboxes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+
+      .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .checkbox-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .checkbox-item.selected {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+      }
+
+      .checkbox-item input {
+        display: none;
+      }
+
+      .checkbox-item .check {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .checkbox-item.selected .check {
+        background: #3b82f6;
+        border-color: #3b82f6;
+      }
+
+      .checkbox-item.selected .check::after {
+        content: '✓';
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .checkbox-item span {
+        font-size: 14px;
+        color: #e2e8f0;
+      }
+
+      .checkbox-item .flag {
+        margin-left: auto;
+        font-size: 16px;
+      }
+
+      button[type='submit'] {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      button[type='submit']:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.5);
+      }
+
+      button[type='submit']:active {
+        transform: translateY(0);
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 13px;
+        color: #64748b;
+      }
+
+      /* Footer */
+      footer {
+        padding: 40px 0;
+        text-align: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      footer p {
+        color: #475569;
+        font-size: 14px;
+      }
+
+      footer a {
+        color: #3b82f6;
+        text-decoration: none;
+      }
+
+      /* Success message */
+      .success-message {
+        display: none;
+        text-align: center;
+        padding: 40px 20px;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      .success-message .icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+
+      .success-message h3 {
+        font-size: 24px;
+        color: #fff;
+        margin-bottom: 12px;
+      }
+
+      .success-message p {
+        color: #64748b;
+      }
+
+      form.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-gradient"></div>
+
+    <header>
+      <div class="container">
+        <div class="logo">
+          <span class="logo-icon">⏰</span>
+          Trading Hours
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="badge">Free daily alerts</div>
+          <h1>Never Miss<br />Market Open</h1>
+          <p>
+            Get daily email notifications with countdown timers to market open,
+            personalized to your timezone and favorite exchanges.
+          </p>
+
+          <div class="markets">
+            <div class="market-badge">🇺🇸 NYSE</div>
+            <div class="market-badge">🇺🇸 NASDAQ</div>
+            <div class="market-badge">🇬🇧 LSE</div>
+            <div class="market-badge">🇯🇵 JPX</div>
+            <div class="market-badge">🇩🇪 XETRA</div>
+            <div class="market-badge">🇭🇰 HKEX</div>
+            <div class="market-badge">🇦🇺 ASX</div>
+            <div class="market-badge">🇨🇦 TSX</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features">
+        <div class="container">
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              gap: 24px;
+            "
+          >
+            <div class="feature">
+              <div class="feature-icon">🌍</div>
+              <h3>Your Timezone</h3>
+              <p>
+                All times converted to your local timezone. No more mental math.
+              </p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">⏱️</div>
+              <h3>Live Countdown</h3>
+              <p>See exactly how long until each market opens or closes.</p>
+            </div>
+            <div class="feature">
+              <div class="feature-icon">📧</div>
+              <h3>Daily Emails</h3>
+              <p>Beautiful morning digest delivered to your inbox at 8 AM.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section" id="signup">
+        <div class="container">
+          <div class="form-container">
+            <div class="form-header">
+              <h2>Get Started Free</h2>
+              <p>Sign up for daily market alerts</p>
+            </div>
+
+            <div class="success-message" id="success">
+              <div class="icon">🎉</div>
+              <h3>You're on the list!</h3>
+              <p>We'll add you to the daily alerts soon. Check your inbox!</p>
+            </div>
+
+            <form
+              id="signup-form"
+              action="https://formspree.io/f/YOUR_FORM_ID"
+              method="POST"
+            >
+              <div class="form-group">
+                <label for="name">Your Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  placeholder="John Doe"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="john@example.com"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="timezone">Your Timezone</label>
+                <select id="timezone" name="timezone" required>
+                  <option value="">Select timezone...</option>
+                  <optgroup label="Americas">
+                    <option value="America/New_York">New York (EST/EDT)</option>
+                    <option value="America/Los_Angeles">
+                      Los Angeles (PST/PDT)
+                    </option>
+                    <option value="America/Chicago">Chicago (CST/CDT)</option>
+                    <option value="America/Toronto">Toronto (EST/EDT)</option>
+                    <option value="America/Sao_Paulo">São Paulo (BRT)</option>
+                  </optgroup>
+                  <optgroup label="Europe">
+                    <option value="Europe/London">London (GMT/BST)</option>
+                    <option value="Europe/Paris">Paris (CET/CEST)</option>
+                    <option value="Europe/Berlin">Berlin (CET/CEST)</option>
+                    <option value="Europe/Zurich">Zurich (CET/CEST)</option>
+                  </optgroup>
+                  <optgroup label="Asia Pacific">
+                    <option value="Asia/Tokyo">Tokyo (JST)</option>
+                    <option value="Asia/Hong_Kong">Hong Kong (HKT)</option>
+                    <option value="Asia/Singapore">Singapore (SGT)</option>
+                    <option value="Asia/Tel_Aviv">Tel Aviv (IST)</option>
+                    <option value="Asia/Dubai">Dubai (GST)</option>
+                    <option value="Australia/Sydney">Sydney (AEST)</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option value="UTC">UTC</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div class="checkbox-group">
+                <label>Select Exchanges</label>
+                <div class="checkboxes">
+                  <label class="checkbox-item selected">
+                    <input
+                      type="checkbox"
+                      name="exchanges"
+                      value="NYSE"
+                      checked
+                    />
+                    <div class="check"></div>
+                    <span>NYSE</span>
+                    <span class="flag">🇺🇸</span>
+                  </label>
+                  <label class="checkbox-item selected">
+                    <input
+                      type="checkbox"
+                      name="exchanges"
+                      value="NASDAQ"
+                      checked
+                    />
+                    <div class="check"></div>
+                    <span>NASDAQ</span>
+                    <span class="flag">🇺🇸</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="LSE" />
+                    <div class="check"></div>
+                    <span>LSE</span>
+                    <span class="flag">🇬🇧</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="JPX" />
+                    <div class="check"></div>
+                    <span>JPX</span>
+                    <span class="flag">🇯🇵</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="XETRA" />
+                    <div class="check"></div>
+                    <span>XETRA</span>
+                    <span class="flag">🇩🇪</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="HKEX" />
+                    <div class="check"></div>
+                    <span>HKEX</span>
+                    <span class="flag">🇭🇰</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="ASX" />
+                    <div class="check"></div>
+                    <span>ASX</span>
+                    <span class="flag">🇦🇺</span>
+                  </label>
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="exchanges" value="TSX" />
+                    <div class="check"></div>
+                    <span>TSX</span>
+                    <span class="flag">🇨🇦</span>
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit">Subscribe to Alerts →</button>
+            </form>
+
+            <p class="form-footer">
+              Free forever • No spam • Unsubscribe anytime
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          Built with ☕ by
+          <a href="https://github.com/dvd90" target="_blank">dvd90</a> •
+          <a href="https://github.com/dvd90/trading-hours" target="_blank"
+            >View on GitHub</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Toggle checkbox styling
+      document.querySelectorAll('.checkbox-item').forEach((item) => {
+        item.addEventListener('click', (e) => {
+          if (e.target.tagName !== 'INPUT') {
+            const checkbox = item.querySelector('input');
+            checkbox.checked = !checkbox.checked;
+          }
+          item.classList.toggle(
+            'selected',
+            item.querySelector('input').checked
+          );
+        });
+      });
+
+      // Form submission
+      document
+        .getElementById('signup-form')
+        .addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const form = e.target;
+          const formData = new FormData(form);
+
+          // Get selected exchanges as array
+          const exchanges = [];
+          form
+            .querySelectorAll('input[name="exchanges"]:checked')
+            .forEach((cb) => {
+              exchanges.push(cb.value);
+            });
+
+          try {
+            const response = await fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                Accept: 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              form.classList.add('hidden');
+              document.getElementById('success').classList.add('show');
+            }
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        });
+
+      // Auto-detect timezone
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const timezoneSelect = document.getElementById('timezone');
+      const option = timezoneSelect.querySelector(
+        `option[value="${userTimezone}"]`
+      );
+      if (option) {
+        option.selected = true;
+      }
+    </script>
+  </body>
+</html>
