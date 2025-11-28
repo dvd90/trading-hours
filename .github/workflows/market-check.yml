@@ -5,13 +5,40 @@ on:
   workflow_dispatch:
     inputs:
       timezone:
-        description: 'Your timezone (e.g., America/New_York, Europe/London, Asia/Tokyo)'
-        required: false
+        description: 'Your timezone'
+        required: true
+        type: choice
         default: 'America/New_York'
+        options:
+          - 'America/New_York'
+          - 'America/Los_Angeles'
+          - 'America/Chicago'
+          - 'America/Toronto'
+          - 'Europe/London'
+          - 'Europe/Paris'
+          - 'Europe/Berlin'
+          - 'Asia/Tokyo'
+          - 'Asia/Hong_Kong'
+          - 'Asia/Singapore'
+          - 'Australia/Sydney'
+          - 'UTC'
       exchanges:
-        description: 'Comma-separated exchanges (e.g., NYSE,NASDAQ,LSE)'
-        required: false
+        description: 'Exchanges to check'
+        required: true
+        type: choice
         default: 'NYSE,NASDAQ,LSE,JPX'
+        options:
+          - 'NYSE,NASDAQ'
+          - 'NYSE,NASDAQ,LSE,JPX'
+          - 'NYSE,NASDAQ,LSE,JPX,XETRA,HKEX,ASX,TSX'
+          - 'NYSE'
+          - 'NASDAQ'
+          - 'LSE'
+          - 'JPX'
+          - 'XETRA'
+          - 'HKEX'
+          - 'ASX'
+          - 'TSX'
 
   # Or run on a schedule (uncomment and customize)
   # schedule:
