@@ -100,10 +100,6 @@ on:
           - "ASX"
           - "TSX"
 
-  # Or run on a schedule (uncomment and customize)
-  # schedule:
-  #   - cron: '0 8 * * 1-5'  # 8 AM UTC, weekdays
-
 jobs:
   check-market-hours:
     runs-on: ubuntu-latest

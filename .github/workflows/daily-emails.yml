@@ -1,0 +1,32 @@
+name: Daily Market Emails
+
+on:
+  # Run every day at 8:00 AM UTC (adjust cron for your needs)
+  schedule:
+    - cron: "0 8 * * 1-5" # 8 AM UTC, Monday to Friday
+
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  send-emails:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Send daily market emails
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        run: npm run send-emails
+

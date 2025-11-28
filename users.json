@@ -1,0 +1,8 @@
+[
+  {
+    "name": "David",
+    "email": "dvdsellam@gmail.com",
+    "timezone": "Asia/Tel_Aviv",
+    "exchanges": ["NYSE", "NASDAQ"]
+  }
+]
