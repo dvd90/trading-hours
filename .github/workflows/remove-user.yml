@@ -1,0 +1,54 @@
+name: Remove User
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "Email address to remove"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  remove-user:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove user from users.json
+        env:
+          EMAIL: ${{ github.event.inputs.email }}
+        run: |
+          echo "Looking for user: $EMAIL"
+          
+          # Check if user exists
+          if ! jq -e --arg email "$EMAIL" '.[] | select(.email == $email)' users.json > /dev/null 2>&1; then
+            echo "❌ User $EMAIL not found!"
+            exit 1
+          fi
+          
+          # Get user name for commit message
+          USER_NAME=$(jq -r --arg email "$EMAIL" '.[] | select(.email == $email) | .name' users.json)
+          echo "Found user: $USER_NAME ($EMAIL)"
+          
+          # Remove user
+          jq --arg email "$EMAIL" 'map(select(.email != $email))' users.json > users.tmp.json
+          mv users.tmp.json users.json
+          
+          echo "✅ User removed successfully!"
+          echo "USER_NAME=$USER_NAME" >> $GITHUB_ENV
+          echo "USER_EMAIL=$EMAIL" >> $GITHUB_ENV
+          
+          echo "Updated users.json:"
+          cat users.json
+
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Remove user: ${{ env.USER_NAME }} (${{ env.USER_EMAIL }})"
+          file_pattern: users.json
+

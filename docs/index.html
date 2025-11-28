@@ -668,10 +668,10 @@
         item.addEventListener('click', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          
+
           // Toggle checkbox
           checkbox.checked = !checkbox.checked;
-          
+
           // Update styling
           item.classList.toggle('selected', checkbox.checked);
         });
