@@ -509,8 +509,8 @@
 
             <div class="success-message" id="success">
               <div class="icon">🎉</div>
-              <h3>You're on the list!</h3>
-              <p>We'll add you to the daily alerts soon. Check your inbox!</p>
+              <h3>Almost there!</h3>
+              <p>Click "Submit new issue" on GitHub to complete your signup. You'll be added automatically!</p>
             </div>
 
             <form
@@ -675,16 +675,18 @@
         });
       });
 
-      // Form submission
+      // Form submission - creates GitHub issue
       document
         .getElementById('signup-form')
-        .addEventListener('submit', async (e) => {
+        .addEventListener('submit', (e) => {
           e.preventDefault();
 
           const form = e.target;
-          const formData = new FormData(form);
-
-          // Get selected exchanges as array
+          const name = form.querySelector('#name').value;
+          const email = form.querySelector('#email').value;
+          const timezone = form.querySelector('#timezone').value;
+          
+          // Get selected exchanges
           const exchanges = [];
           form
             .querySelectorAll('input[name="exchanges"]:checked')
@@ -692,22 +694,24 @@
               exchanges.push(cb.value);
             });
 
-          try {
-            const response = await fetch(form.action, {
-              method: 'POST',
-              body: formData,
-              headers: {
-                Accept: 'application/json',
-              },
-            });
+          // Build issue body
+          const issueBody = `Name: ${name}
+Email: ${email}
+Timezone: ${timezone}
+Exchanges: ${exchanges.join(', ')}`;
 
-            if (response.ok) {
-              form.classList.add('hidden');
-              document.getElementById('success').classList.add('show');
-            }
-          } catch (error) {
-            console.error('Error:', error);
-          }
+          // Create GitHub issue URL
+          const issueUrl = `https://github.com/dvd90/trading-hours/issues/new?` +
+            `title=${encodeURIComponent('[NEW USER] ' + name)}` +
+            `&body=${encodeURIComponent(issueBody)}` +
+            `&labels=new-user`;
+
+          // Open in new tab
+          window.open(issueUrl, '_blank');
+          
+          // Show success
+          form.classList.add('hidden');
+          document.getElementById('success').classList.add('show');
         });
 
       // Auto-detect timezone
