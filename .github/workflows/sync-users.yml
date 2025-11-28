@@ -1,0 +1,107 @@
+name: Sync Users from Formspree
+
+on:
+  # Run every hour
+  schedule:
+    - cron: "0 * * * *"
+
+  # Or manually
+  workflow_dispatch:
+
+jobs:
+  sync-users:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch and sync users
+        env:
+          FORMSPREE_API_KEY: ${{ secrets.FORMSPREE_API_KEY }}
+          FORMSPREE_FORM_ID: meobrnld
+        run: |
+          # Fetch submissions from Formspree API
+          echo "Fetching submissions from Formspree..."
+          
+          RESPONSE=$(curl -s -H "Authorization: Bearer $FORMSPREE_API_KEY" \
+            "https://formspree.io/api/0/forms/$FORMSPREE_FORM_ID/submissions")
+          
+          # Check if we got a valid response
+          if echo "$RESPONSE" | jq -e '.submissions' > /dev/null 2>&1; then
+            echo "Found submissions!"
+          else
+            echo "No submissions found or API error"
+            echo "Response: $RESPONSE"
+            exit 0
+          fi
+          
+          # Process each submission
+          echo "$RESPONSE" | jq -c '.submissions[]' | while read -r submission; do
+            NAME=$(echo "$submission" | jq -r '.name // empty')
+            EMAIL=$(echo "$submission" | jq -r '.email // empty')
+            TIMEZONE=$(echo "$submission" | jq -r '.timezone // empty')
+            EXCHANGES=$(echo "$submission" | jq -r '.exchanges // "NYSE,NASDAQ"')
+            
+            # Skip if missing required fields
+            if [ -z "$NAME" ] || [ -z "$EMAIL" ] || [ -z "$TIMEZONE" ]; then
+              echo "Skipping incomplete submission: $EMAIL"
+              continue
+            fi
+            
+            # Check if user already exists
+            if jq -e --arg email "$EMAIL" '.[] | select(.email == $email)' users.json > /dev/null 2>&1; then
+              echo "User $EMAIL already exists, skipping..."
+              continue
+            fi
+            
+            echo "Adding new user: $NAME ($EMAIL)"
+            
+            # Handle exchanges - could be array or comma-separated string
+            if echo "$EXCHANGES" | jq -e 'type == "array"' > /dev/null 2>&1; then
+              EXCHANGES_JSON="$EXCHANGES"
+            else
+              EXCHANGES_JSON=$(echo "$EXCHANGES" | tr ',' '\n' | jq -R . | jq -s .)
+            fi
+            
+            # Create new user object
+            NEW_USER=$(jq -n \
+              --arg name "$NAME" \
+              --arg email "$EMAIL" \
+              --arg timezone "$TIMEZONE" \
+              --argjson exchanges "$EXCHANGES_JSON" \
+              '{name: $name, email: $email, timezone: $timezone, exchanges: $exchanges}')
+            
+            # Add user to users.json
+            jq --argjson user "$NEW_USER" '. += [$user]' users.json > users.tmp.json
+            mv users.tmp.json users.json
+            
+            echo "✅ Added: $NAME ($EMAIL)"
+          done
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet users.json; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No new users to add"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "New users added!"
+            cat users.json
+          fi
+
+      - name: Commit and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add users.json
+          git commit -m "Auto-sync: Add new users from Formspree"
+          git push
+
