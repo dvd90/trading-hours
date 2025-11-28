@@ -5,8 +5,8 @@ import {
   setHours,
   setMinutes,
   setSeconds,
-} from "date-fns";
-import { toZonedTime, fromZonedTime } from "date-fns-tz";
+} from 'date-fns';
+import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
 // Market configurations with their trading hours
 export const MARKETS: Record<
@@ -21,64 +21,64 @@ export const MARKETS: Record<
   }
 > = {
   NYSE: {
-    name: "New York Stock Exchange",
-    timezone: "America/New_York",
+    name: 'New York Stock Exchange',
+    timezone: 'America/New_York',
     openHour: 9,
     openMinute: 30,
     closeHour: 16,
     closeMinute: 0,
   },
   NASDAQ: {
-    name: "NASDAQ",
-    timezone: "America/New_York",
+    name: 'NASDAQ',
+    timezone: 'America/New_York',
     openHour: 9,
     openMinute: 30,
     closeHour: 16,
     closeMinute: 0,
   },
   LSE: {
-    name: "London Stock Exchange",
-    timezone: "Europe/London",
+    name: 'London Stock Exchange',
+    timezone: 'Europe/London',
     openHour: 8,
     openMinute: 0,
     closeHour: 16,
     closeMinute: 30,
   },
   JPX: {
-    name: "Tokyo Stock Exchange",
-    timezone: "Asia/Tokyo",
+    name: 'Tokyo Stock Exchange',
+    timezone: 'Asia/Tokyo',
     openHour: 9,
     openMinute: 0,
     closeHour: 15,
     closeMinute: 0,
   },
   XETRA: {
-    name: "Frankfurt Stock Exchange",
-    timezone: "Europe/Berlin",
+    name: 'Frankfurt Stock Exchange',
+    timezone: 'Europe/Berlin',
     openHour: 9,
     openMinute: 0,
     closeHour: 17,
     closeMinute: 30,
   },
   HKEX: {
-    name: "Hong Kong Stock Exchange",
-    timezone: "Asia/Hong_Kong",
+    name: 'Hong Kong Stock Exchange',
+    timezone: 'Asia/Hong_Kong',
     openHour: 9,
     openMinute: 30,
     closeHour: 16,
     closeMinute: 0,
   },
   ASX: {
-    name: "Australian Securities Exchange",
-    timezone: "Australia/Sydney",
+    name: 'Australian Securities Exchange',
+    timezone: 'Australia/Sydney',
     openHour: 10,
     openMinute: 0,
     closeHour: 16,
     closeMinute: 0,
   },
   TSX: {
-    name: "Toronto Stock Exchange",
-    timezone: "America/Toronto",
+    name: 'Toronto Stock Exchange',
+    timezone: 'America/Toronto',
     openHour: 9,
     openMinute: 30,
     closeHour: 16,
@@ -89,7 +89,7 @@ export const MARKETS: Record<
 export interface MarketStatus {
   exchange: string;
   name: string;
-  status: "open" | "closed";
+  status: 'open' | 'closed';
   nextOpen?: string;
   closesAt?: string;
   timeUntilOpen?: string;
@@ -103,9 +103,9 @@ function formatDuration(ms: number): string {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  return `${hours}:${minutes.toString().padStart(2, "0")}:${seconds
+  return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds
     .toString()
-    .padStart(2, "0")}`;
+    .padStart(2, '0')}`;
 }
 
 function getNextTradingDay(date: Date, marketTz: string): Date {
@@ -129,9 +129,9 @@ export function getMarketStatus(
   if (!market) {
     return {
       exchange: exchangeCode,
-      name: "Unknown",
-      status: "closed",
-      timeUntilOpen: "Unknown exchange",
+      name: 'Unknown',
+      status: 'closed',
+      timeUntilOpen: 'Unknown exchange',
     };
   }
 
@@ -158,8 +158,8 @@ export function getMarketStatus(
     return {
       exchange: exchangeCode,
       name: market.name,
-      status: "open",
-      closesAt: format(closeInUserTz, "yyyy-MM-dd HH:mm zzz", {
+      status: 'open',
+      closesAt: format(closeInUserTz, 'yyyy-MM-dd HH:mm zzz', {
         timeZone: userTimezone,
       } as any),
       timeUntilClose: formatDuration(msUntilClose),
@@ -204,8 +204,8 @@ export function getMarketStatus(
   return {
     exchange: exchangeCode,
     name: market.name,
-    status: "closed",
-    nextOpen: format(nextOpenInUserTz, "yyyy-MM-dd HH:mm zzz", {
+    status: 'closed',
+    nextOpen: format(nextOpenInUserTz, 'yyyy-MM-dd HH:mm zzz', {
       timeZone: userTimezone,
     } as any),
     timeUntilOpen: formatDuration(msUntilOpen),
@@ -214,7 +214,7 @@ export function getMarketStatus(
 }
 
 export function formatOutput(status: MarketStatus): string {
-  if (status.status === "open") {
+  if (status.status === 'open') {
     return `🟢 ${status.exchange} (${status.name}): OPEN NOW
    Closes at: ${status.closesAt}
    Time until close: ${status.timeUntilClose}`;
@@ -227,15 +227,20 @@ export function formatOutput(status: MarketStatus): string {
 
 export function generateReport(
   exchanges: string[],
-  userTimezone: string
+  userTimezone: string,
+  userName?: string
 ): { text: string; html: string; statuses: MarketStatus[] } {
   const now = new Date();
   const nowInUserTz = toZonedTime(now, userTimezone);
-  const currentTime = format(nowInUserTz, "yyyy-MM-dd HH:mm:ss zzz", {
+  const currentTime = format(nowInUserTz, 'HH:mm', {
+    timeZone: userTimezone,
+  } as any);
+  const currentDate = format(nowInUserTz, 'EEEE, MMMM d', {
     timeZone: userTimezone,
   } as any);
 
   const statuses = exchanges.map((ex) => getMarketStatus(ex, userTimezone));
+  const openCount = statuses.filter((s) => s.status === 'open').length;
 
   // Text version
   let text = `🕐 Market Hours Check\n`;
@@ -243,46 +248,131 @@ export function generateReport(
   text += `⏰ Current time: ${currentTime}\n\n`;
 
   for (const status of statuses) {
-    text += formatOutput(status) + "\n\n";
+    text += formatOutput(status) + '\n\n';
   }
 
-  // HTML version
-  let html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h1 style="color: #1a1a1a; font-size: 24px; margin-bottom: 8px;">🕐 Market Hours Check</h1>
-      <p style="color: #666; margin: 4px 0;">📍 Timezone: ${userTimezone}</p>
-      <p style="color: #666; margin: 4px 0 20px;">⏰ ${currentTime}</p>
+  // Beautiful HTML version
+  const greeting = userName ? `Good morning, ${userName}` : 'Good morning';
 
-      <div style="display: flex; flex-direction: column; gap: 12px;">
+  let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background: #0a0a0f;">
+  <div style="max-width: 600px; margin: 0 auto; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <!-- Header with gradient -->
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 40px 30px 30px; border-radius: 0 0 24px 24px;">
+      <div style="text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 8px;">📈</div>
+        <h1 style="color: #ffffff; font-size: 28px; font-weight: 700; margin: 0 0 4px; letter-spacing: -0.5px;">
+          ${greeting}
+        </h1>
+        <p style="color: #94a3b8; font-size: 16px; margin: 0;">
+          ${currentDate}
+        </p>
+      </div>
+
+      <!-- Time display -->
+      <div style="text-align: center; margin-top: 24px;">
+        <div style="display: inline-block; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 16px; padding: 16px 32px;">
+          <div style="color: #e2e8f0; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Local Time</div>
+          <div style="color: #ffffff; font-size: 36px; font-weight: 700; font-variant-numeric: tabular-nums;">${currentTime}</div>
+          <div style="color: #64748b; font-size: 12px; margin-top: 4px;">${userTimezone}</div>
+        </div>
+      </div>
+
+      <!-- Summary badges -->
+      <div style="text-align: center; margin-top: 20px;">
+        <span style="display: inline-block; background: ${
+          openCount > 0 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'
+        }; color: ${
+    openCount > 0 ? '#34d399' : '#f87171'
+  }; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+          ${openCount} of ${statuses.length} markets open
+        </span>
+      </div>
+    </div>
+
+    <!-- Markets section -->
+    <div style="padding: 24px 20px;">
+      <h2 style="color: #e2e8f0; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 16px 8px; font-weight: 600;">Your Markets</h2>
+
+      <div style="display: block;">
   `;
 
   for (const status of statuses) {
-    const isOpen = status.status === "open";
-    const bgColor = isOpen ? "#ecfdf5" : "#fef2f2";
-    const borderColor = isOpen ? "#10b981" : "#ef4444";
-    const statusEmoji = isOpen ? "🟢" : "🔴";
-    const statusText = isOpen ? "OPEN NOW" : "CLOSED";
-    const timeInfo = isOpen
-      ? `Closes at: ${status.closesAt}<br/>Time until close: ${status.timeUntilClose}`
-      : `Next open: ${status.nextOpen}<br/>Time until open: ${status.timeUntilOpen} (${status.hoursUntil}h)`;
+    const isOpen = status.status === 'open';
+    const statusColor = isOpen ? '#10b981' : '#ef4444';
+    const statusBg = isOpen
+      ? 'rgba(16, 185, 129, 0.15)'
+      : 'rgba(239, 68, 68, 0.1)';
+    const statusText = isOpen ? 'OPEN' : 'CLOSED';
+    const glowColor = isOpen ? '0 0 20px rgba(16, 185, 129, 0.3)' : 'none';
+
+    const timeLabel = isOpen ? 'Closes in' : 'Opens in';
+    const timeValue = isOpen ? status.timeUntilClose : status.timeUntilOpen;
+    const scheduleTime = isOpen ? status.closesAt : status.nextOpen;
+
+    // Extract just the time from the schedule
+    const scheduleTimeOnly =
+      scheduleTime?.split(' ').slice(1, 2).join(' ') || '';
 
     html += `
-      <div style="background: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 16px; border-radius: 8px;">
-        <div style="font-weight: 600; font-size: 16px; color: #1a1a1a;">
-          ${statusEmoji} ${status.exchange} <span style="font-weight: 400; color: #666;">(${status.name})</span>
+        <div style="background: linear-gradient(145deg, #1e1e2d 0%, #171723 100%); border-radius: 16px; padding: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); box-shadow: ${glowColor};">
+          <div style="display: table; width: 100%;">
+            <div style="display: table-cell; vertical-align: middle;">
+              <div style="color: #ffffff; font-size: 18px; font-weight: 700; margin-bottom: 2px;">${
+                status.exchange
+              }</div>
+              <div style="color: #64748b; font-size: 13px;">${status.name}</div>
+            </div>
+            <div style="display: table-cell; vertical-align: middle; text-align: right;">
+              <div style="display: inline-block; background: ${statusBg}; border: 1px solid ${statusColor}; color: ${statusColor}; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;">
+                ● ${statusText}
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="display: table; width: 100%;">
+              <div style="display: table-cell; width: 50%;">
+                <div style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${timeLabel}</div>
+                <div style="color: #f1f5f9; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums;">${timeValue}</div>
+              </div>
+              <div style="display: table-cell; width: 50%; text-align: right;">
+                <div style="color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">${
+                  isOpen ? 'Closes at' : 'Opens at'
+                }</div>
+                <div style="color: #94a3b8; font-size: 16px; font-weight: 500;">${scheduleTimeOnly}</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div style="font-weight: 500; margin: 8px 0;">${statusText}</div>
-        <div style="color: #666; font-size: 14px; line-height: 1.5;">${timeInfo}</div>
-      </div>
     `;
   }
 
   html += `
       </div>
-      <p style="color: #999; font-size: 12px; margin-top: 24px; text-align: center;">
-        Sent by Trading Hours Service
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 20px 30px 40px; text-align: center;">
+      <div style="height: 1px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent); margin-bottom: 20px;"></div>
+      <p style="color: #475569; font-size: 12px; margin: 0;">
+        Trading Hours • Powered by ☕ and code
+      </p>
+      <p style="color: #334155; font-size: 11px; margin: 8px 0 0;">
+        Market hours may vary on holidays
       </p>
     </div>
+
+  </div>
+</body>
+</html>
   `;
 
   return { text, html, statuses };

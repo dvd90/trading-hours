@@ -49,7 +49,7 @@ async function main() {
   for (const user of users) {
     console.log(`📤 Sending to ${user.name} (${user.email})...`);
 
-    const report = generateReport(user.exchanges, user.timezone);
+    const report = generateReport(user.exchanges, user.timezone, user.name);
 
     try {
       const { data, error } = await resend.emails.send({
