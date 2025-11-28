@@ -662,15 +662,23 @@
     <script>
       // Toggle checkbox styling
       document.querySelectorAll('.checkbox-item').forEach((item) => {
+        const checkbox = item.querySelector('input');
+        
+        // Handle click on the label (not the hidden input)
         item.addEventListener('click', (e) => {
-          if (e.target.tagName !== 'INPUT') {
-            const checkbox = item.querySelector('input');
-            checkbox.checked = !checkbox.checked;
-          }
-          item.classList.toggle(
-            'selected',
-            item.querySelector('input').checked
-          );
+          // Prevent double-toggle when clicking directly on checkbox
+          if (e.target === checkbox) return;
+          
+          // Toggle checkbox
+          checkbox.checked = !checkbox.checked;
+          
+          // Update styling
+          item.classList.toggle('selected', checkbox.checked);
+        });
+        
+        // Also handle direct checkbox changes
+        checkbox.addEventListener('change', () => {
+          item.classList.toggle('selected', checkbox.checked);
         });
       });
 
