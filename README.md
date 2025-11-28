@@ -153,7 +153,7 @@ trading-hours/
    🔴 CLOSED
    Opens in: 1:30:00 (1.5h)
 
-🇺🇸 NASDAQ - NASDAQ  
+🇺🇸 NASDAQ - NASDAQ
    🔴 CLOSED
    Opens in: 1:30:00 (1.5h)
 
