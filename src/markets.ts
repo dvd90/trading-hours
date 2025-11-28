@@ -148,10 +148,8 @@ export function generateReport(
   }
 
   // HTML version
-  const greeting = userName ? `Good morning, ${userName}` : 'Good morning';
-
   const html = generateEmailHtml({
-    greeting,
+    userName: userName || 'there',
     currentDate,
     currentTime,
     userTimezone,
