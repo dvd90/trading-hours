@@ -1,0 +1,40 @@
+name: Market Hours Check
+
+on:
+  # Run manually anytime
+  workflow_dispatch:
+    inputs:
+      timezone:
+        description: 'Your timezone (e.g., America/New_York, Europe/London, Asia/Tokyo)'
+        required: false
+        default: 'America/New_York'
+      exchanges:
+        description: 'Comma-separated exchanges (e.g., NYSE,NASDAQ,LSE)'
+        required: false
+        default: 'NYSE,NASDAQ,LSE,JPX'
+
+  # Or run on a schedule (uncomment and customize)
+  # schedule:
+  #   - cron: '0 8 * * 1-5'  # 8 AM UTC, weekdays
+
+jobs:
+  check-market-hours:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check market hours
+        env:
+          TIMEZONE: ${{ github.event.inputs.timezone || 'America/New_York' }}
+          EXCHANGES: ${{ github.event.inputs.exchanges || 'NYSE,NASDAQ,LSE,JPX' }}
+        run: npm run check
