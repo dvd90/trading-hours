@@ -83,4 +83,3 @@ jobs:
           git add users.json
           git diff --staged --quiet || git commit -m "Add user: ${{ github.event.client_payload.email || github.event.inputs.email }}"
           git push
-
