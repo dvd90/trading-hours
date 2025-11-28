@@ -7,5 +7,14 @@
       "NYSE",
       "NASDAQ"
     ]
+  },
+  {
+    "name": "Nadya",
+    "email": "nadyacheln@gmail.com",
+    "timezone": "Asia/Tel_Aviv",
+    "exchanges": [
+      "NYSE",
+      "NASDAQ"
+    ]
   }
 ]
