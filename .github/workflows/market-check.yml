@@ -5,40 +5,40 @@ on:
   workflow_dispatch:
     inputs:
       timezone:
-        description: 'Your timezone'
+        description: "Your timezone"
         required: true
         type: choice
-        default: 'America/New_York'
+        default: "America/New_York"
         options:
-          - 'America/New_York'
-          - 'America/Los_Angeles'
-          - 'America/Chicago'
-          - 'America/Toronto'
-          - 'Europe/London'
-          - 'Europe/Paris'
-          - 'Europe/Berlin'
-          - 'Asia/Tokyo'
-          - 'Asia/Hong_Kong'
-          - 'Asia/Singapore'
-          - 'Australia/Sydney'
-          - 'UTC'
+          - "America/New_York"
+          - "America/Los_Angeles"
+          - "America/Chicago"
+          - "America/Toronto"
+          - "Europe/London"
+          - "Europe/Paris"
+          - "Europe/Berlin"
+          - "Asia/Tokyo"
+          - "Asia/Hong_Kong"
+          - "Asia/Singapore"
+          - "Australia/Sydney"
+          - "UTC"
       exchanges:
-        description: 'Exchanges to check'
+        description: "Exchanges to check"
         required: true
         type: choice
-        default: 'NYSE,NASDAQ,LSE,JPX'
+        default: "NYSE,NASDAQ,LSE,JPX"
         options:
-          - 'NYSE,NASDAQ'
-          - 'NYSE,NASDAQ,LSE,JPX'
-          - 'NYSE,NASDAQ,LSE,JPX,XETRA,HKEX,ASX,TSX'
-          - 'NYSE'
-          - 'NASDAQ'
-          - 'LSE'
-          - 'JPX'
-          - 'XETRA'
-          - 'HKEX'
-          - 'ASX'
-          - 'TSX'
+          - "NYSE,NASDAQ"
+          - "NYSE,NASDAQ,LSE,JPX"
+          - "NYSE,NASDAQ,LSE,JPX,XETRA,HKEX,ASX,TSX"
+          - "NYSE"
+          - "NASDAQ"
+          - "LSE"
+          - "JPX"
+          - "XETRA"
+          - "HKEX"
+          - "ASX"
+          - "TSX"
 
   # Or run on a schedule (uncomment and customize)
   # schedule:
@@ -55,7 +55,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install
