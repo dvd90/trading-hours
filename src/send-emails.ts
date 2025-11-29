@@ -76,7 +76,9 @@ async function main() {
       const now = new Date();
       const userTime = toZonedTime(now, user.timezone);
       console.log(
-        `⏭️  Skipping ${user.name} - it's ${userTime.getHours()}:00 in ${user.timezone} (not ${sendHour}:00)`
+        `⏭️  Skipping ${user.name} - it's ${userTime.getHours()}:00 in ${
+          user.timezone
+        } (not ${sendHour}:00)`
       );
       skippedCount++;
       continue;
