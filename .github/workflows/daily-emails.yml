@@ -1,12 +1,21 @@
 name: Daily Market Emails
 
 on:
-  # Run every day at 8:00 AM UTC (adjust cron for your needs)
+  # Run every hour to check each user's timezone
   schedule:
-    - cron: "0 8 * * 1-5" # 8 AM UTC, Monday to Friday
+    - cron: "0 * * * 1-5" # Every hour, Monday to Friday
 
-  # Also allow manual trigger
+  # Also allow manual trigger (sends to all users regardless of time)
   workflow_dispatch:
+    inputs:
+      force_send:
+        description: "Send to all users regardless of their local time"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 jobs:
   send-emails:
@@ -28,4 +37,6 @@ jobs:
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+          SEND_HOUR: "8"
+          FORCE_SEND: ${{ github.event.inputs.force_send || 'false' }}
         run: npm run send-emails
